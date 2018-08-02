@@ -9,6 +9,8 @@ import sys
 from datetime import datetime
 from git import Repo
 from subprocess import Popen, PIPE
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 
 
 GIT_REPO_DIR = '/backup/git_repo'
@@ -44,15 +46,15 @@ def parse_ops(args):
     return parser.parse_args(args)
 
 
-def dump_databases(opts):
+def dump_databases(host, port, user, password, databases):
     logger = logging.getLogger()
     output_files = list()
-    databases = opts.databases.split(',')
+    databases = databases.split(',')
     for db in databases:
         logger.info('Starting backup database \'%s\'...' % db)
         file_name = '%s.sql' % db
         output = os.path.join(GIT_REPO_DIR, '%s' % file_name)
-        cmd = 'mysqldump -h %s -P %s -u%s -p%s %s > %s' % (opts.host, opts.port, opts.user, opts.password, db, output)
+        cmd = 'mysqldump -h %s -P %s -u%s -p%s %s > %s' % (host, port, user, password, db, output)
         p = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=True)
         stdout, stderr = p.communicate()
         if stderr:
@@ -63,19 +65,19 @@ def dump_databases(opts):
     return output_files
 
 
-def backup(opts):
+def backup(git_url, host, port, user, password, databases):
     logger = logging.getLogger()
     if not os.path.exists(GIT_REPO_DIR):
         logger.info('Git repo does not exist')
         logger.info('Cloning git repo for the first run...')
-        repo = Repo.clone_from(opts.git_repo, GIT_REPO_DIR)
+        repo = Repo.clone_from(git_url, GIT_REPO_DIR)
         logger.info('Cloning is finshed')
     else:
         logger.info('Pulling changes from remote...')
         repo = Repo(GIT_REPO_DIR)
         repo.git.pull('origin', 'master')
         logger.info('Pulling is finshed')
-    output_files = dump_databases(opts)
+    output_files = dump_databases(host, port, user, password, databases)
     repo.index.add(output_files)
     time_stamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
     logger.info('Committing and pushing change to git repo...')
@@ -88,7 +90,12 @@ def main(args):
     opts = parse_ops(args)
     init_logger()
     logger = logging.getLogger()
-    backup(opts)
+    scheduler = BackgroundScheduler()
+    backup_args = (opts.git_repo, opts.host, opts.port, opts.user, opts.password, opts.databases)
+    scheduler.add_job(func=backup, args=backup_args, trigger='cron', hour='22')
+    scheduler.start()
+    while True:
+        pass
 
 
 if __name__ == '__main__':
