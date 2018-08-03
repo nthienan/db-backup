@@ -1,0 +1,6 @@
+.git
+.gitignore
+.editorconfig
+.vscode
+.venv
+requirements.txt
