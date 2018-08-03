@@ -50,7 +50,6 @@ def parse_ops(args):
 
 def sigterm_handler(signum, frame):
     global SHOUBLE_STOPED
-    logger.info(signum)
     if signal.SIGTERM == signum:
         SHOUBLE_STOPED = True
 
