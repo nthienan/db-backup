@@ -5,6 +5,7 @@ import json
 import os
 import logging
 import sys
+import signal
 
 from datetime import datetime
 from git import Repo
@@ -14,6 +15,7 @@ from apscheduler.triggers.cron import CronTrigger
 
 
 GIT_REPO_DIR = '/backup/git_repo'
+SHOUBLE_STOPED = False
 
 def init_logger():
     logger = logging.getLogger()
@@ -44,6 +46,13 @@ def parse_ops(args):
     parser.add_argument('--git-repo', dest='git_repo',
                         help='URL of git repository including access token in URL e.g. https://oauth2:<access_token>@gitlab.com/username/private-project')
     return parser.parse_args(args)
+
+
+def sigterm_handler(signum, frame):
+    global SHOUBLE_STOPED
+    logger.info(signum)
+    if signal.SIGTERM == signum:
+        SHOUBLE_STOPED = True
 
 
 def dump_databases(host, port, user, password, databases):
@@ -87,16 +96,20 @@ def backup(git_url, host, port, user, password, databases):
 
 
 def main(args):
+    global SHOUBLE_STOPED
     opts = parse_ops(args)
     init_logger()
     logger = logging.getLogger()
     scheduler = BackgroundScheduler()
     backup_args = (opts.git_repo, opts.host, opts.port, opts.user, opts.password, opts.databases)
-    scheduler.add_job(func=backup, args=backup_args, trigger='cron', hour='22')
+    scheduler.add_job(func=backup, args=backup_args, trigger='cron', second='30')
     scheduler.start()
-    while True:
+    while not SHOUBLE_STOPED:
         pass
+    scheduler.shutdown()
+    logger.info("Bye bye! See you soon.")
 
 
 if __name__ == '__main__':
+    signal.signal(signal.SIGTERM, sigterm_handler)
     sys.exit(main(sys.argv[1:]))
