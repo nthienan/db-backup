@@ -1,0 +1,21 @@
+version: "3.5"
+
+volumes:
+  db_vol: {}
+
+services:
+  db:
+    image: mariadb:10.3.7
+    restart: always
+    volumes:
+      - db_vol:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysql
+      - MYSQL_DATABASE=test
+      - MYSQL_USER=nthienan
+      - MYSQL_PASSWORD=123456
+  db-backup:
+    image: nthienan/mariadb-backup
+    command: "--git-repo https://oauth2:<access_token>@github.com/username/db-backup.git --host db -u nthienan -p 123456 --database test"
