@@ -3,3 +3,7 @@
 .editorconfig
 .vscode
 .venv
+build
+dist
+**/*.egg*
+**/*.pyc

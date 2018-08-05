@@ -1,3 +1,7 @@
+FROM nthienan/python:3.6.6-alpine3.8-onbuild as builder
+
+RUN python setup.py clean bdist_wheel
+
 FROM alpine:3.8
 
 ENV TZ=Africa/Abidjan
@@ -13,9 +17,12 @@ RUN apk --no-cache update && \
     rm -rf /var/cache/apk/* && \
     rm -rf /root/.cache
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
-COPY . ./
-RUN pip install --no-cache-dir -r requirements.txt
+RUN mkdir -p /var/db-backup/config
+WORKDIR /var/db-backup
 
-ENTRYPOINT [ "/usr/src/app/entrypoint.py" ]
+COPY --from=builder /usr/src/app/dist/db_backup*.whl .
+RUN pip install --no-cache-dir db_backup*.whl
+RUN rm -f db_backup*.whl
+
+ENTRYPOINT [ "db_backup.py" ]
+CMD [ "-c", "/var/db-backup/config/db-backup.yaml" ]

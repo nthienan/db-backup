@@ -15,7 +15,10 @@ services:
       - MYSQL_ROOT_PASSWORD=mysql
       - MYSQL_DATABASE=test
       - MYSQL_USER=nthienan
-      - MYSQL_PASSWORD=123456
+      - MYSQL_PASSWORD=something_secret
   db-backup:
-    image: nthienan/mariadb-backup
-    command: "--git-repo https://oauth2:<access_token>@github.com/username/db-backup.git --host db -u nthienan -p 123456 --database test"
+    image: nthienan/db-backup
+    volumes:
+      -  ./config.yaml:/var/db-backup/config/db-backup.yaml
+    depends_on:
+      - db

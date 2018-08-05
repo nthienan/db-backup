@@ -1,0 +1,16 @@
+backup:
+- db: MariaDB
+  host: db
+  port: 3306
+  user: root
+  password: mysql
+  # name of databases to be backuped
+  databases:
+  - test
+  storages:
+  - provider: Git
+    # URL of git repository including access token in URL e.g. https://oauth2:<access_token>@gitlab.com/username/private-project
+    url: https://oauth2:1bb8c47609d75ea9642677f7f4e5cf5c8473fa74@github.com/nthienan/test-db-sync.git
+    # whether storage provider supports verioning or not. If versioning is support then backup result will overwrite the previous one
+    versioning: true
+    dir: /var/db-backup/data/git
