@@ -5,8 +5,6 @@ from datetime import datetime
 
 from git import Repo
 
-logger = logging.getLogger()
-
 
 class Storage(ABC):
     def __init__(self):
@@ -25,7 +23,6 @@ class Storage(ABC):
 
 
 class Git(Storage):
-
     def __init__(self, url, dir, **kwargs):
         super().__init__()
         self.repo_url = url
@@ -34,16 +31,15 @@ class Git(Storage):
 
     def store(self, data):
         if not os.path.exists(os.path.join(self.repo_dir, '.git')):
-            logger.info('Git repo does not exist')
+            logging.info('Git repo does not exist')
             os.makedirs(self.repo_dir)
-            logger.info('Cloning git repo for the first run...')
+            logging.info('Cloning git repo for the first run...')
             repo = Repo.clone_from(self.repo_url, self.repo_dir)
-            logger.info('Cloning is finished')
+            logging.info('Repo has been cloned successfully')
         else:
-            logger.info('Pulling changes from remote...')
+            logging.info('Git pull changes from remote')
             repo = Repo(self.repo_dir)
             repo.git.pull('origin', 'master')
-            logger.info('Pulling is finished')
 
         files = list()
         for key, value in data.items():
@@ -53,13 +49,13 @@ class Git(Storage):
                 files.append(file_name)
 
         if len(files) > 0:
-            logger.info('git add %s...' % files)
+            logging.debug('git add %s' % files)
             repo.index.add(files)
             time_stamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-            logger.info('Committing and pushing change to git repo...')
-            repo.index.commit('automatically backup at %s UTC' % time_stamp)
+            logging.info('Commit and push changes to remote')
+            commit = repo.index.commit('automatically backup at %s UTC' % time_stamp)
+            logging.debug('Git commit: %s - %s' % (commit.hexsha, commit.message))
             repo.git.push('origin', 'master')
-            logger.info('Pushing backup files has been finished')
 
     def retrieve(self, *args, **kwargs):
         pass

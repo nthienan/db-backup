@@ -21,7 +21,7 @@ class MariaDB:
         self.user = user
         self.password = password
         self.databases = databases
-        self.name = 'MariaDB-%s@%s %s' % (user, host, databases)
+        self.name = 'MariaDB-%s@%s-%s' % (user, host, databases)
 
     def backup(self):
         results = dict()
@@ -34,7 +34,7 @@ class MariaDB:
                 raise RuntimeError('Error occurred when backup %s: %s' % (db, stderr))
             else:
                 results.update({'%s.sql' % db: stdout})
-                logging.info('Finshed backing up database \'%s\'' % db)
+                logging.info('Backup database \'%s\' is done' % db)
         return results
 
     def restore(self):

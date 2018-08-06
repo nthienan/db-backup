@@ -12,8 +12,8 @@ class Application:
     def __init__(self, cfg_file):
         self.cfg_file = cfg_file
         self.is_running = False
-        self.init_logger()
         self._load_config_file()
+        self.init_logger(self.cfg['logging']['level'])
         self.scheduler = Scheduler()
 
     def run(self, delay=30):
@@ -37,9 +37,9 @@ class Application:
             self.cfg = yaml.load(f)
 
     @classmethod
-    def init_logger(cls):
+    def init_logger(cls, level):
         logger = logging.getLogger()
-        logger.setLevel(logging.INFO)
+        logger.setLevel(level)
 
         formatter = logging.Formatter('%(asctime)s %(levelname)s - %(message)s')
         console_handler = logging.StreamHandler()
