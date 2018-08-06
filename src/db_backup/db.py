@@ -21,6 +21,7 @@ class MariaDB:
         self.user = user
         self.password = password
         self.databases = databases
+        self.name = 'MariaDB-%s@%s %s' % (user, host, databases)
 
     def backup(self):
         results = dict()

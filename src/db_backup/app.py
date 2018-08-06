@@ -3,8 +3,8 @@ import os
 import time
 
 import yaml
-from apscheduler.schedulers.background import BackgroundScheduler
 
+from .scheduler import Scheduler
 from .worker import Worker
 
 
@@ -13,27 +13,21 @@ class Application:
         self.cfg_file = cfg_file
         self.is_running = False
         self.init_logger()
-        self.scheduler = BackgroundScheduler()
+        self._load_config_file()
+        self.scheduler = Scheduler()
 
     def run(self, delay=30):
-        self._load_config_file()
         time.sleep(delay)
         for db in self.cfg['backup']:
-            worker = Worker(**db)
-            worker.work()
-        self.start()
-
-    def start(self):
+            self.scheduler.schedule(worker=Worker(**db), triggers=db['trigger'])
+        self.scheduler.start()
         self.is_running = True
-        # backup_args = (self.opts.git_repo, self.opts.host, self.opts.port, self.opts.user, self.opts.password, self.opts.databases)
-        # self.scheduler.add_job(func=backup, args=backup_args, trigger='cron', second='30')
-        # self.scheduler.start()
         while self.is_running:
             time.sleep(30)
 
     def stop(self):
         self.is_running = False
-        if self.scheduler.running:
+        if self.scheduler.is_running():
             self.scheduler.shutdown()
 
     def _load_config_file(self):

@@ -14,3 +14,8 @@ backup:
     # whether storage provider supports verioning or not. If versioning is support then backup result will overwrite the previous one
     versioning: true
     dir: /var/db-backup/data/git
+  trigger:
+    cron: 1 0 * * *
+    once: 2018-08-06 17:05:27
+logging:
+  level: INFO
