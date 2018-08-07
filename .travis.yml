@@ -20,10 +20,10 @@ before_deploy:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
 deploy:
   - provider: script
-    script: dcd --version $VERSION --version-semver --version-latest $IMAGE_NAME
+    script: dcd --version $VERSION --version-semver --version-latest --verbose $IMAGE_NAME
     on:
       branch: master
   - provider: script
-    script: dcd --version $(git rev-parse --short HEAD) $IMAGE_NAME
+    script: dcd --version $(git rev-parse --short HEAD) --verbose $IMAGE_NAME
     on:
       all_branches: true
