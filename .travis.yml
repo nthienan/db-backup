@@ -23,7 +23,6 @@ deploy:
     on:
       branch: master
   - provider: script
-    script: dcd --tag $(git rev-parse --short HEAD) --tag $TRAVIS_TAG $IMAGE_NAME
+    script: dcd --tag $(git rev-parse --short HEAD) $IMAGE_NAME
     on:
       all_branches: true
-      tags: true
