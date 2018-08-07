@@ -1,19 +1,19 @@
 import os
 import shutil
-import yaml
-
-from datetime import datetime
-from setuptools import setup, find_packages, Command
 from codecs import open
 from os import path
 
+from setuptools import setup, Command
+
 here = path.abspath(path.dirname(__file__))
-name ='db-backup'
-version = '0.0.1'
+name = 'db-backup'
+version = '1.0.0'
+
 
 class CleanCommand(Command):
     description = "custom clean command that forcefully removes dist and build directories"
     user_options = []
+
     def initialize_options(self):
         self.cwd = None
 
@@ -44,7 +44,7 @@ setup(
     description='DB-Backup',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://gitlab.com/practice-devops/tools/mariadb-backup',
+    url='https://github.com/nthienan/db-backup',
     author='An Nguyen',
     author_email='nthienan.it@gmail.com',
     license='MIT',
@@ -99,8 +99,8 @@ setup(
     # },
 
     project_urls={
-        'Bug Reports': 'https://gitlab.com/practice-devops/tools/mariadb-backup/issues',
-        'Source': 'https://gitlab.com/practice-devops/tools/mariadb-backup',
+        'Bug Reports': 'https://github.com/nthienan/db-backup/issues',
+        'Source': 'https://github.com/nthienan/db-backup',
     },
 
     cmdclass={
