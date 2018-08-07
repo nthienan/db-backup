@@ -1,21 +1,29 @@
 sudo: required
-language: python
 services:
   - docker
 env:
   global:
     - IMAGE_NAME=nthienan/db-backup
+    - VERSION=1.0.0
+install: true
 
 before_script:
   - docker pull $IMAGE_NAME || true
 script:
   - docker build --pull --cache-from $IMAGE_NAME --tag $IMAGE_NAME .
-after_script:
+after_success:
   - docker images
 
 before_deploy:
   - pip install docker-ci-deploy
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
 deploy:
-  provider: script
-  script: dcd --tag $(git rev-parse --short HEAD) --tag latest $IMAGE_NAME
+  - provider: script
+    script: dcd --version $VERSION --version-semver --version-latest $IMAGE_NAME
+    on:
+      branch: master
+  - provider: script
+    script: dcd --tag $(git rev-parse --short HEAD) --tag $TRAVIS_TAG $IMAGE_NAME
+    on:
+      all_branches: true
+      tags: true
