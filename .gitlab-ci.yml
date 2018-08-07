@@ -11,7 +11,7 @@ variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
   CONTAINER_TEST_IMAGE: registry.gitlab.com/practice-devops/tools/mariadb-backup:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA
-  CONTAINER_RELEASE_IMAGE: nthienan/db-backup:latest
+  CONTAINER_RELEASE_IMAGE: nthienan/db-backup
 
 before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -26,11 +26,10 @@ release-image:
   stage: release
   only:
     - master
-  before_script:
-    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
   script:
     - docker pull $CONTAINER_TEST_IMAGE
-    - docker tag $CONTAINER_TEST_IMAGE nthienan/db-backup:$CI_COMMIT_SHA
-    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
-    - docker push nthienan/db-backup:$CI_COMMIT_SHA
+    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE:$CI_COMMIT_SHA
+    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE:latest
+    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
+    - docker push $CONTAINER_RELEASE_IMAGE:$CI_COMMIT_SHA
     - docker push $CONTAINER_RELEASE_IMAGE
