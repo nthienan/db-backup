@@ -10,11 +10,11 @@ stages:
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
-  CONTAINER_TEST_IMAGE: registry.gitlab.com/nthienan/db-backup:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA
-  CONTAINER_RELEASE_IMAGE: registry.gitlab.com/nthienan/db-backup:latest
+  CONTAINER_TEST_IMAGE: registry.gitlab.com/practice-devops/tools/mariadb-backup:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA
+  CONTAINER_RELEASE_IMAGE: nthienan/db-backup:latest
 
 before_script:
-  - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
 build:
   stage: build
