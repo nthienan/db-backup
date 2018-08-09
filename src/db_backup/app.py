@@ -21,6 +21,7 @@ class Application:
         for db in self.cfg['backup']:
             self.scheduler.schedule(worker=Worker(**db), triggers=db['trigger'])
         self.scheduler.start()
+        logging.info('Ready for jobs run')
         self.is_running = True
         while self.is_running:
             time.sleep(30)

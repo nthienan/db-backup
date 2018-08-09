@@ -3,3 +3,5 @@ argparse==1.4.0
 gitpython==2.1.11
 pylint==2.1.1
 PyYAML==3.13
+seaworthy==0.3.0
+pytest==3.7.1

@@ -7,3 +7,4 @@ build
 dist
 **/*.egg*
 **/*.pyc
+.pytest_cache

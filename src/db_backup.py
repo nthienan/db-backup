@@ -7,9 +7,6 @@ import sys
 from db.backup.app import Application
 
 
-# from db_backup.app import Application
-
-
 def parse_opts(args):
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--config-file', dest='cfg_file',
