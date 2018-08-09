@@ -1,6 +1,7 @@
 import logging
 
 from abc import ABC, abstractmethod
+from datetime import datetime
 from subprocess import Popen, PIPE
 
 
@@ -24,7 +25,7 @@ class MariaDB:
         self.name = 'MariaDB-%s@%s-%s' % (user, host, databases)
 
     def backup(self):
-        results = dict()
+        results = {'data': dict(), 'timestamp': datetime.utcnow()}
         for db in self.databases:
             logging.info('Starting backup database \'%s\'...' % db)
             cmd = 'mysqldump -h %s -P %s -u%s -p%s %s' % (self.host, self.port, self.user, self.password, db)
@@ -33,7 +34,7 @@ class MariaDB:
             if stderr:
                 raise RuntimeError('Error occurred when backup %s: %s' % (db, stderr))
             else:
-                results.update({'%s.sql' % db: stdout})
+                results['data'].update({'%s.sql' % db: stdout})
                 logging.info('Backup database \'%s\' is done' % db)
         return results
 

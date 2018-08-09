@@ -14,6 +14,8 @@ backup:
     # whether storage provider supports versioning or not. If versioning is support then backup result will overwrite the previous one
     versioning: true
     dir: /var/db-backup/data/git
+  - provider: Local
+    dir: /var/db-backup/data/local
   trigger:
     # at 00:01 daily
     cron: 1 0 * * *

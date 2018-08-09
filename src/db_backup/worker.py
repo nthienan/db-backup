@@ -15,4 +15,4 @@ class Worker:
     def work(self):
         results = self.db.backup()
         for storage in self.storages:
-            storage.store(results)
+            storage.store(**results)
