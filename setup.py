@@ -7,7 +7,7 @@ from setuptools import setup, Command
 
 here = path.abspath(path.dirname(__file__))
 name = 'db-backup'
-version = '1.0.0'
+version = '1.0.1'
 
 
 class CleanCommand(Command):
