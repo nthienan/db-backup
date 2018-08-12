@@ -23,7 +23,7 @@ class Application:
         self.scheduler.start()
         self.is_running = True
         while self.is_running:
-            time.sleep(30)
+            time.sleep(3)
 
     def stop(self):
         self.is_running = False
