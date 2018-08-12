@@ -8,14 +8,14 @@ from subprocess import Popen, PIPE
 class AbstractDB(ABC):
     @abstractmethod
     def backup(self, *args, **kwargs):
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     def restore(self, *args, **kwargs):
-        pass
+        raise NotImplementedError()
 
 
-class MariaDB:
+class MariaDB(AbstractDB):
     def __init__(self, host='localhost', port='3306', user='root', password='secret', databases=[], **kwargs):
         self.host = host
         self.port = port
@@ -24,7 +24,7 @@ class MariaDB:
         self.databases = databases
         self.name = 'MariaDB-%s@%s-%s' % (user, host, databases)
 
-    def backup(self):
+    def backup(self, *args, **kwargs):
         results = {'data': dict(), 'timestamp': datetime.utcnow()}
         for db in self.databases:
             logging.info('Starting backup database \'%s\'...' % db)
@@ -38,5 +38,5 @@ class MariaDB:
                 logging.info('Backup database \'%s\' is done' % db)
         return results
 
-    def restore(self):
+    def restore(self, *args, **kwargs):
         logging.info('Do nothing')

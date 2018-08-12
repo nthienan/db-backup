@@ -13,9 +13,13 @@ backup:
     url: https://oauth2:<access_token>@github.com/user/db-sync.git
     # whether storage provider supports versioning or not. If versioning is support then backup result will overwrite the previous one
     versioning: true
+    # L20180812104500_UTC_monitoring.sqlocation where repo should be cloned into
     dir: /var/db-backup/data/git
   - provider: Local
+    # Location where backup results should be stored
     dir: /var/db-backup/data/local
+    # Number of backup file of a database will be kept. Older backup will be removed
+    numberToKeep: 5
   trigger:
     # at 00:01 daily
     cron: 1 0 * * *
