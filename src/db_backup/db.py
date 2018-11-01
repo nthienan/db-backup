@@ -40,3 +40,29 @@ class MariaDB(AbstractDB):
 
     def restore(self, *args, **kwargs):
         logging.info('Do nothing')
+
+class PostgreSQL(AbstractDB):
+    def __init__(self, host='localhost', port='5432', user='postgres', password='secret', databases=[], **kwargs):
+        self.host = host
+        self.port = port
+        self.user = user
+        self.password = password
+        self.databases = databases
+        self.name = 'PostgreSQL-%s@%s-%s' % (user, host, databases)
+
+    def backup(self, *args, **kwargs):
+        results = {'data': dict(), 'timestamp': datetime.utcnow()}
+        for db in self.databases:
+            logging.info('Starting backup database \'%s\'...' % db)
+            cmd = 'pg_dump --dbname=postgresql://%s:%s@%s:%s/%s' % (self.user, self.password, self.host, self.port, db)
+            p = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=True)
+            stdout, stderr = p.communicate()
+            if stderr:
+                raise RuntimeError('Error occurred when backup %s: %s' % (db, stderr))
+            else:
+                results['data'].update({'%s.sql' % db: stdout})
+                logging.info('Backup database \'%s\' is done' % db)
+        return results
+
+    def restore(self, *args, **kwargs):
+        logging.info('Not implement yet')
