@@ -8,7 +8,7 @@ ENV TZ=Africa/Abidjan
 
 RUN apk --no-cache update && \
     apk --no-cache upgrade && \
-    apk --no-cache add tzdata mariadb-client python3 git && \
+    apk --no-cache add tzdata mariadb-client postgresql-client python3 git && \
     python3 -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
     pip3 install --upgrade pip setuptools && \
