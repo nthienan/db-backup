@@ -8,7 +8,7 @@ ENV TZ=Africa/Abidjan
 
 RUN apk --no-cache update && \
     apk --no-cache upgrade && \
-    apk --no-cache add tzdata mariadb-client postgresql-client python3 git && \
+    apk --no-cache add tzdata mariadb-client postgresql-client python3 git openssh && \
     python3 -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
     pip3 install --upgrade pip setuptools && \
@@ -17,6 +17,7 @@ RUN apk --no-cache update && \
     rm -rf /var/cache/apk/* && \
     rm -rf /root/.cache
 
+COPY ssh_config /root/.ssh/config
 RUN mkdir -p /var/db-backup/config
 WORKDIR /var/db-backup
 
