@@ -18,6 +18,7 @@ RUN apk --no-cache update && \
     rm -rf /root/.cache
 
 COPY ssh_config /root/.ssh/config
+RUN chmod 400 /root/.ssh/config
 RUN mkdir -p /var/db-backup/config
 WORKDIR /var/db-backup
 
