@@ -1,6 +1,9 @@
 pipeline {
   agent {
-    label 'docker'
+    kubernetes {
+      label 'db-backup'
+      yamlFile 'builder-pod.yaml'
+    }
   }
   stages {
     stage('Build') {
