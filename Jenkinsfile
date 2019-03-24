@@ -14,7 +14,7 @@ metadata:
     component: ci-cd
 spec:
   containers:
-    - name: dind
+    - name: builder
       image: docker:18.05-dind
       securityContext:
         privileged: true
@@ -30,10 +30,14 @@ spec:
   stages {
     stage('Build') {
       steps {
-        container('dind') {
+        container('builder') {
           sh 'docker build -t nthienan/db-backup .'
         }
-        container('busybox') {
+      }
+    }
+    stage('Archive') {
+      steps {
+        container('builder') {
           sh 'docker image'
         }
       }
