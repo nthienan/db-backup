@@ -13,7 +13,7 @@ pipeline {
     stage('Archive') {
       steps {
         container('dind') {
-          sh 'docker image'
+          sh 'docker images'
         }
       }
     }
