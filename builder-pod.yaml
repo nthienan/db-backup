@@ -10,7 +10,7 @@ spec:
   containers:
     - name: jnlp
       image: jenkins/jnlp-slave:3.27-1-alpine
-    - name: docker-18.05
+    - name: docker-18-05
       image: docker:18.05-dind
       securityContext:
         privileged: true
