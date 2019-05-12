@@ -8,14 +8,14 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        container('docker-18-05') {
+        container('docker') {
           sh 'docker build -t nthienan/db-backup .'
         }
       }
     }
     stage('Archive') {
       steps {
-        container('docker-18-05') {
+        container('docker') {
           sh 'docker images'
         }
       }
