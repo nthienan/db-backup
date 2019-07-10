@@ -2,7 +2,7 @@ FROM nthienan/python:3.6.6-alpine3.8-onbuild as builder
 
 RUN python setup.py clean bdist_wheel
 
-FROM alpine:3.8
+FROM alpine:3.10.0
 
 ENV TZ=Africa/Abidjan
 
@@ -18,13 +18,14 @@ RUN apk --no-cache update && \
     rm -rf /root/.cache
 
 COPY ssh_config /root/.ssh/config
-RUN chmod 400 /root/.ssh/config
-RUN mkdir -p /var/db-backup/config
+RUN chmod 400 /root/.ssh/config && \
+    mkdir -p /var/db-backup/config
 WORKDIR /var/db-backup
+VOLUME /var/db-backup
 
 COPY --from=builder /usr/src/app/dist/db_backup*.whl .
-RUN pip install --no-cache-dir db_backup*.whl
-RUN rm -f db_backup*.whl
+RUN pip install --no-cache-dir db_backup*.whl && \
+    rm -f db_backup*.whl
 
 ENTRYPOINT [ "db_backup.py" ]
 CMD [ "-c", "/var/db-backup/config/db-backup.yaml" ]

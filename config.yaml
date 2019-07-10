@@ -4,7 +4,7 @@ backup:
   port: 3306
   user: root
   password: mysql
-  # name of databases to be backuped
+  # name of databases to be backup
   databases:
   - test
   storages:
