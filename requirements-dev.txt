@@ -1,5 +1,5 @@
 apscheduler==3.5.1
 argparse==1.4.0
 gitpython==2.1.11
-pylint==2.7.2
+pylint==2.14.3
 PyYAML==5.4
